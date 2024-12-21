@@ -21,17 +21,20 @@ jobs:
       - uses: actions/checkout@3
       - name: Build docker image
         run: | 
-          docker build . --file Dockerfile --tag delivery-service:latest 
+          docker build . --file Dockerfile --tag cr.yandex/${{ secrets.YC_REGISTRY_ID }}/delivery-service:latest
+
 
       
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Log in to DockerHub
+      - name: Login to YC Registry
         uses: docker/login-action@v3.0.0
         with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-      - name: Push tag to DockerHub
+          registry: cr.yandex
+          username: json_key
+          password: ${{ secrets.YC_KEYS }}
+      - name: Push tag to YC Registry
         run: |
-          docker push ${{ secrets.DOCKER_USERNAME }}/delivery-service:latest
+          docker push cr.yandex/${{ secrets.YC_REGISTRY_ID }}/deliveryservice:latest 
+
